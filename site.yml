@@ -1,6 +1,6 @@
 - hosts: mesos-master
   roles:
     - mesos-master        
-  become: yes
-  become_method: sudo        
+  #  become: yes
+  #  become_method: sudo        
      
