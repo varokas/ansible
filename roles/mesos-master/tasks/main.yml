@@ -1,27 +1,23 @@
 ---
 
-- name: Add key server
-  apt_key: keyserver=keyserver.ubuntu.com id=E56151BF 
+- name: Add repository server
+  yum: name=http://repos.mesosphere.com/el/7/noarch/RPMS/mesosphere-el-repo-7-1.noarch.rpm state=present
 
-- name: Add apt repository server
-  apt_repository: repo='deb http://repos.mesosphere.io/ubuntu trusty main'  
+- name: Install Mesos
+  yum: name=mesos state=present
 
-- name: Add java 8 repo
-  apt_repository: repo='ppa:webupd8team/java'
+- name: Install Marathon
+  yum: name=marathon state=present
 
-- name: Automatically select the Oracle License
-  tags: java
-  shell: echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
-  changed_when: false  
+- name: Install Zookeeper
+  yum: name=mesosphere-zookeeper state=present
 
-- name: Install java8
-  apt: name={{ item }}
-  with_items:
-    - oracle-java8-installer
-    - oracle-java8-set-default      
- 
-- name: Install mesos
-  apt: name={{ item }} 
-  with_items:
-    - mesos
-    - marathon      
+- name: Assign Zookeeper id
+  copy: dest=/var/lib/zookeeper/myid content="{{ zookeeper_id }}"
+  notify:
+    - restart_zookeeper
+
+- name: Configure zookeeper
+  template: src=zoo.cfg.j2 dest=/etc/zookeeper/conf/zoo.cfg owner=root group=root
+  notify:
+    - restart_zookeeper

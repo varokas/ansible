@@ -1,6 +1,13 @@
 [mesos-master]
-163.172.129.89 zookeeper_id=1
+212.47.230.215 zookeeper_id=1
 
 [mesos-master:vars]
 ansible_ssh_private_key_file=~/.ssh/varokas
-ansible_user=varokas
+ansible_user=root
+
+[ec2]
+localhost
+
+[ec2:vars]
+ansible_connection=local
+ansible_python_interpreter=/usr/local/bin/python
