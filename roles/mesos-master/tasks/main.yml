@@ -1,23 +1,26 @@
 ---
 
-- name: Add repository server
-  yum: name=http://repos.mesosphere.com/el/7/noarch/RPMS/mesosphere-el-repo-7-1.noarch.rpm state=present
+# - name: Add repository server
+#   yum: name=http://repos.mesosphere.com/el/7/noarch/RPMS/mesosphere-el-repo-7-1.noarch.rpm state=present
 
-- name: Install Mesos
-  yum: name=mesos state=present
+# - name: Install Mesos
+#   yum: name=mesos state=present
 
-- name: Install Marathon
-  yum: name=marathon state=present
+# - name: Install Marathon
+#   yum: name=marathon state=present
 
-- name: Install Zookeeper
-  yum: name=mesosphere-zookeeper state=present
+# - name: Install Zookeeper
+#   yum: name=mesosphere-zookeeper state=present
 
-- name: Assign Zookeeper id
-  copy: dest=/var/lib/zookeeper/myid content="{{ zookeeper_id }}"
-  notify:
-    - restart_zookeeper
+# - name: Assign Zookeeper id
+#   copy: dest=/var/lib/zookeeper/myid content="{{ zookeeper_id }}"
+#   notify:
+#     - restart_zookeeper
 
-- name: Configure zookeeper
-  template: src=zoo.cfg.j2 dest=/etc/zookeeper/conf/zoo.cfg owner=root group=root
-  notify:
-    - restart_zookeeper
+# - name: Configure zookeeper
+#   template: src=zoo.cfg.j2 dest=/etc/zookeeper/conf/zoo.cfg owner=root group=root
+#   notify:
+#     - restart_zookeeper
+
+- name: Configure mesos-master
+  copy: dest=/etc/mesos/zk content="zk://{{ play_hosts | join(',') }}/mesos"
