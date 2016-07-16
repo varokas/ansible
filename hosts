@@ -5,6 +5,17 @@
 ansible_ssh_private_key_file=~/.ssh/varokas
 ansible_user=root
 
+[swarm:children]
+swarm-manager
+#swarm-worker
+
+[swarm:vars]
+ansible_user=vagrant
+ansible_ssh_pass=vagrant
+
+[swarm-manager]
+192.168.33.10
+
 [ec2]
 localhost
 

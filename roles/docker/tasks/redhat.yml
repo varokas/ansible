@@ -1,0 +1,26 @@
+---
+- name: Add yum repository for docker
+  yum_repository:
+    name: dockerrepo
+    description: "Docker Repository"
+    baseurl: "https://yum.dockerproject.org/repo/main/centos/7/"
+    enabled: yes
+    gpgcheck: yes
+    gpgkey: "https://yum.dockerproject.org/gpg"
+
+- name: Enable OverlayFS during restart
+  copy: dest="/etc/modules-load.d/overlay.conf" content="overlay"
+
+- name: Enable OverlayFS module 
+  modprobe: name=overlay state=present
+
+- name: Add docker engine
+  yum: name="docker-engine" state="latest"
+
+- name: Create docker configuration directory
+  file: path=/etc/systemd/system/docker.service.d owner=root group=root state=directory
+
+- name: Configure docker
+  template: src=overrides.conf.j2 dest=/etc/systemd/system/docker.service.d/override.conf owner=root group=root   
+  notify:
+    - systemd_restart_docker
