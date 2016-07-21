@@ -1,0 +1,16 @@
+---
+
+# Implement firewall correctly
+# - name: Open firewall tcp ports for docker swarm
+#   firewalld: port="{{ item }}/tcp" permanent=true state=enabled
+#   with_items: [2377,7946,4789]
+
+# - name: Open firewall udp ports for docker swarm
+#   firewalld: port="{{ item }}/udp" permanent=true state=enabled
+#   with_items: [7946,4789]
+
+- name: Disabling firewall
+  service: name=firewalld state=stopped
+
+- name: Initialize swarm
+  debug: msg="echo {{ ansible_default_ipv4.address }}"

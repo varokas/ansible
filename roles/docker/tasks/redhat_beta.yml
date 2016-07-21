@@ -1,0 +1,23 @@
+---
+- name: Check if docker is installed
+  command: "docker" 
+  register: result
+  ignore_errors: yes
+
+- name: Download and install docker beta
+  shell: "curl -fsSL https://test.docker.com/ | sh"
+  when: result|failed
+
+- name: Enable OverlayFS during restart
+  copy: dest="/etc/modules-load.d/overlay.conf" content="overlay"
+
+- name: Enable OverlayFS module 
+  modprobe: name=overlay state=present
+
+- name: Create docker configuration directory
+  file: path=/etc/systemd/system/docker.service.d owner=root group=root state=directory
+
+- name: Configure docker
+  template: src=overrides.conf.j2 dest=/etc/systemd/system/docker.service.d/override.conf owner=root group=root   
+  notify:
+    - systemd_restart_docker
