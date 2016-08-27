@@ -3,3 +3,6 @@
 
 - name: restart_mesos_master
   service: name=mesos-master state=restarted      
+
+- name: restart_marathon
+  service: name=marathon state=restarted      
