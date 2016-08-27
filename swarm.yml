@@ -1,6 +1,0 @@
-- hosts: swarm
-  vars:
-    docker_beta: true
-  roles:
-    - docker
-    

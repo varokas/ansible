@@ -1,4 +1,0 @@
-- hosts: mesos-master
-  roles:
-    - mesos-master
-  gather_facts: false 
