@@ -1,4 +1,4 @@
-- hosts: swarm-manager
+- hosts: swarm
   vars:
     docker_beta: true
   roles:
