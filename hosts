@@ -8,8 +8,8 @@ mesos-slave
 54.169.77.232 zk_ip=172.31.17.92 zk_id=3
 
 [mesos-slave]
-52.77.215.151
-54.169.35.155
+52.77.215.151 internal_ip=172.31.17.93
+54.169.35.155 internal_ip=172.31.17.89
 
 [ec2:vars]
 ansible_user=ubuntu

@@ -1,0 +1,67 @@
+---
+- name: Add apt-key
+  apt_key: id=E56151BF keyserver=keyserver.ubuntu.com state=present
+
+- name: Add mesosphere repo
+  apt_repository: repo='deb {{ mesosphere_apt_url }} main' state=present
+
+- name: Add docker apt-key
+  apt_key: id=58118E89F3A912897C070ADBF76221572C52609D keyserver=hkp://p80.pool.sks-keyservers.net:80 state=present
+
+- name: Add docker repo
+  apt_repository: repo='deb https://apt.dockerproject.org/repo {{ ansible_distribution | lower }}-{{ansible_distribution_release}} main' state=present
+
+- name: Install docker
+  apt: pkg=docker-engine state=present update_cache=yes
+
+- name: Start docker
+  service: name=docker state=started 
+
+- name: Install Java
+  apt: pkg=openjdk-8-jdk state=present
+
+- name: Install mesos
+  apt: pkg={{ item }} state=present update_cache=yes
+  with_items:
+     - wget
+     - curl
+     - zip
+     - unzip
+     - mesos={{mesos_apt_version}}
+
+- name: Configure mesos to zk
+  copy: dest=/etc/mesos/zk content="zk://{{ groups.mesosphere | join(':2181,') }}:2181/mesos"
+  notify:
+      - restart_mesos_slave
+
+- name: Configure mesos-slave ip
+  copy: dest=/etc/mesos-slave/ip content="{{internal_ip}}"
+  notify:
+      - restart_mesos_slave
+      
+- name: Configure mesos-slave hostname
+  copy: dest=/etc/mesos-slave/hostname content="{{inventory_hostname}}"
+  notify:
+      - restart_mesos_slave
+
+- name: Configure mesos-slave containerizer
+  copy: dest=/etc/mesos-slave/containerizers content="docker,mesos"
+  notify:
+      - restart_mesos_slave
+
+- name: Configure mesos-slave executor_registration_timeout
+  copy: dest=/etc/mesos-slave/executor_registration_timeout content="9mins"
+  notify:
+      - restart_mesos_slave
+      
+- name: Override mesos-master to not start manually
+  copy: dest=/etc/init/mesos-master.override content="manual"
+
+- name: Ensure mesos-master is stopped
+  service: name=mesos-master state=stopped 
+
+- name: Override zk to not start manually
+  copy: dest=/etc/init/zookeeper.override content="manual"
+
+- name: Ensure zookeeper is stopped
+  service: name=zookeeper state=stopped 

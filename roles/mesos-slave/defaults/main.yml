@@ -1,0 +1,2 @@
+mesosphere_apt_url: "http://repos.mesosphere.com/{{ ansible_distribution | lower }} {{ansible_distribution_release}}"
+mesos_apt_version: 1.0.0*
