@@ -1,0 +1,13 @@
+---
+- name: Create centos user
+  user: name=centos group=wheel
+
+- name: Update authorized_keys
+  authorized_key: user=centos key="{{ lookup('file', '/home/varokas/.ssh/varokas.pub') }}"
+
+- name: Allow 'wheel' group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
