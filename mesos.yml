@@ -1,7 +1,3 @@
-# - hosts: mesosphere
-#   roles:
-#     - mesosphere
-
-- hosts: mesos-slave
+- hosts: mesosphere
   roles:
-    - mesos-slave
+    - mesosphere
