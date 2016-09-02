@@ -1,3 +1,8 @@
 - hosts: mesosphere
   roles:
     - mesosphere
+
+#- hosts: mesos-agent
+#  roles:
+#     - docker
+#     - mesos-agent

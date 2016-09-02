@@ -1,6 +1,3 @@
 ---
-# - include: redhat.yml
-#   when: ansible_os_family == "RedHat"
-
-- include: redhat_beta.yml
-  when: (ansible_os_family == "RedHat" and docker_beta == true)
+- include: redhat.yml
+  when: ansible_os_family == "RedHat"

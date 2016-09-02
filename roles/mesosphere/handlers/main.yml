@@ -6,3 +6,6 @@
 
 - name: restart_marathon
   service: name=marathon state=restarted      
+
+- name: restart_chronos
+  service: name=chronos state=restarted      

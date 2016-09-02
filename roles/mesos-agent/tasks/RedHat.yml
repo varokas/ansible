@@ -1,0 +1,43 @@
+---
+- name: Install epel
+  yum: name=epel-release state=present
+
+- name: Install Java
+  yum: name=java-1.8.0-openjdk-devel state=present
+
+- name: Add mesosphere repo
+  yum: name=http://repos.mesosphere.com/el/7/noarch/RPMS/mesosphere-el-repo-7-1.noarch.rpm state=present
+
+- name: Install mesos
+  yum: pkg=mesos state=present update_cache=yes
+
+- name: Configure mesos to zk
+  copy: dest=/etc/mesos/zk content="zk://{{ groups.mesosphere | join(':2181,') }}:2181/mesos"
+  notify:
+      - restart_mesos_slave
+
+- name: Configure mesos-slave ip
+  copy: dest=/etc/mesos-slave/ip content="{{internal_ip}}"
+  notify:
+      - restart_mesos_slave
+      
+- name: Configure mesos-slave hostname
+  copy: dest=/etc/mesos-slave/hostname content="{{inventory_hostname}}"
+  notify:
+      - restart_mesos_slave
+
+- name: Configure mesos-slave containerizer
+  copy: dest=/etc/mesos-slave/containerizers content="docker,mesos"
+  notify:
+      - restart_mesos_slave
+
+- name: Configure mesos-slave executor_registration_timeout
+  copy: dest=/etc/mesos-slave/executor_registration_timeout content="9mins"
+  notify:
+      - restart_mesos_slave
+
+- name: Start mesos-slave
+  service: name=mesos-slave state=started enabled=true
+
+- name: Ensure mesos-master is stopped and not enabled
+  service: name=mesos-master state=stopped enabled=false

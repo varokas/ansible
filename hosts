@@ -1,13 +1,13 @@
 [do:children]
 mesosphere
-mesos-slave
+mesos-agent
 
 [mesosphere]
 103.253.145.206 zk_ip=103.253.145.206 zk_id=1
 188.166.225.215 zk_ip=188.166.225.215 zk_id=2
 188.166.229.6 zk_ip=188.166.229.6 zk_id=3
 
-[mesos-slave]
+[mesos-agent]
 188.166.237.160 internal_ip=188.166.237.160
 188.166.235.72 internal_ip=188.166.235.72
 

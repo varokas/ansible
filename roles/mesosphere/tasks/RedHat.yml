@@ -9,12 +9,13 @@
   yum: name=http://repos.mesosphere.com/el/7/noarch/RPMS/mesosphere-el-repo-7-1.noarch.rpm state=present
 
 
-- name: Install mesosphere (zookeeper, mesos, marathon)
+- name: Install mesosphere (zookeeper, mesos, marathon, chronos)
   yum: pkg={{ item }} state=present update_cache=yes
   with_items:
      - mesosphere-zookeeper
      - mesos
      - marathon
+     - chronos
 
 - name: Assign Zookeeper id
   copy: dest=/var/lib/zookeeper/myid content="{{ zk_id }}"
@@ -46,6 +47,9 @@
   notify:
       - restart_mesos_master
       
+- name: Enable and start mesos-master
+  service: name=mesos-master state=started enabled=true
+
 - name: Override mesos-slave to not start manually
   service: name=mesos-slave state=stopped enabled=false
 
@@ -66,3 +70,6 @@
   copy: dest=/etc/marathon/conf/zk content="zk://{{ play_hosts | join(':2181,') }}:2181/marathon"
   notify:
       - restart_marathon
+
+- name: Enable and start marathon 
+  service: name=marathon state=started enabled=true
