@@ -15,7 +15,7 @@
   modprobe: name=overlay state=present
 
 - name: Add docker engine
-  yum: name="docker-engine" state="latest"
+  yum: name="docker-engine-{{docker_version}}" state="present"
 
 - name: Create docker configuration directory
   file: path=/etc/systemd/system/docker.service.d owner=root group=root state=directory
