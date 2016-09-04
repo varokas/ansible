@@ -26,4 +26,7 @@
     - systemd_restart_docker
 
 - name: Ensure firewalld is stopped
-  service: name="firewalld" state="stopped"
+  service: name="firewalld" state="stopped" enabled=false
+
+- name: Ensure docker is started
+  service: name="docker" state="started" enabled=true
