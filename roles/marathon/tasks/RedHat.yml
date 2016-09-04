@@ -1,0 +1,34 @@
+---
+- name: Add mesosphere repo
+  yum: name=http://repos.mesosphere.com/el/7/noarch/RPMS/mesosphere-el-repo-7-1.noarch.rpm state=present
+
+- name: Install marathon
+  yum: pkg=marathon state=present update_cache=yes
+  with_items:
+     - marathon
+
+- name: Create marathon conf directory
+  file: path=/etc/marathon/conf state=directory
+
+- name: Configure marathon hostname
+  copy: dest=/etc/marathon/conf/hostname content="{{inventory_hostname}}"
+  notify:
+      - restart_marathon
+
+- name: Configure marathon hostname
+  copy: dest=/etc/marathon/conf/http_credentials content="{{marathon_user}}:{{marathon_password}}"
+  notify:
+      - restart_marathon
+
+- name: Configure marathon mesos master zk
+  copy: dest=/etc/marathon/conf/master content="zk://{{ groups["mesos-master"] | map('extract', hostvars, 'private_ip') | join(':2181,') }}:2181/mesos"
+  notify:
+      - restart_marathon
+
+- name: Configure marathon zk
+  copy: dest=/etc/marathon/conf/zk content="zk://{{ groups["mesos-master"] | map('extract', hostvars, 'private_ip') | join(':2181,') }}:2181/marathon"
+  notify:
+      - restart_marathon
+
+- name: Enable and start marathon 
+  service: name=marathon state=started enabled=true

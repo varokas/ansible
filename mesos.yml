@@ -1,7 +1,8 @@
 - hosts: mesos-master
   roles:
-    - mesos-zookeeper
-    - mesos-master
+#    - mesos-zookeeper
+#    - mesos-master
+    - marathon
 
 - hosts: mesos-agent
   roles:
