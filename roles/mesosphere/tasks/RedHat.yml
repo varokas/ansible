@@ -38,7 +38,7 @@
       - restart_mesos_master
 
 - name: Configure mesos-master ip
-  copy: dest=/etc/mesos-master/ip content="{{zk_ip}}"
+  copy: dest=/etc/mesos-master/ip content="{{private_ip}}"
   notify:
       - restart_mesos_master
       

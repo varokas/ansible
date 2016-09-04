@@ -12,12 +12,12 @@
   yum: pkg=mesos state=present update_cache=yes
 
 - name: Configure mesos to zk
-  copy: dest=/etc/mesos/zk content="zk://{{ groups.mesosphere | join(':2181,') }}:2181/mesos"
+  copy: dest=/etc/mesos/zk content="zk://{{ groups["mesos-master"] | map('extract', hostvars, 'private_ip')  | join(':2181,') }}:2181/mesos"
   notify:
       - restart_mesos_slave
 
 - name: Configure mesos-slave ip
-  copy: dest=/etc/mesos-slave/ip content="{{internal_ip}}"
+  copy: dest=/etc/mesos-slave/ip content="{{private_ip}}"
   notify:
       - restart_mesos_slave
       

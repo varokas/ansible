@@ -1,8 +1,9 @@
-- hosts: mesosphere
+- hosts: mesos-master
   roles:
-    - mesosphere
+    - mesos-zookeeper
+    - mesos-master
 
-#- hosts: mesos-agent
-#  roles:
-#     - docker
-#     - mesos-agent
+- hosts: mesos-agent
+  roles:
+     - docker
+     - mesos-agent

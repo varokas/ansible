@@ -1,0 +1,32 @@
+---
+- name: Add mesosphere repo
+  yum: name=http://repos.mesosphere.com/el/7/noarch/RPMS/mesosphere-el-repo-7-1.noarch.rpm state=present
+
+- name: Install mesos
+  yum: pkg=mesos state=present update_cache=yes
+
+- name: Configure mesos-master to zk
+  copy: dest=/etc/mesos/zk content="zk://{{ play_hosts | join(':2181,') }}:2181/mesos"
+  notify:
+      - restart_mesos_master
+
+- name: Configure mesos-master quorum
+  copy: dest=/etc/mesos-master/quorum content="{{mesos_master_quorum}}"
+  notify:
+      - restart_mesos_master
+
+- name: Configure mesos-master ip
+  copy: dest=/etc/mesos-master/ip content="{{private_ip}}"
+  notify:
+      - restart_mesos_master
+      
+- name: Configure mesos-master hostname
+  copy: dest=/etc/mesos-master/hostname content="{{inventory_hostname}}"
+  notify:
+      - restart_mesos_master
+      
+- name: Enable and start mesos-master
+  service: name=mesos-master state=started enabled=true
+
+- name: Override mesos-slave to not start manually
+  service: name=mesos-slave state=stopped enabled=false

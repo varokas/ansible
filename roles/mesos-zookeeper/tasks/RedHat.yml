@@ -1,0 +1,40 @@
+---
+- name: Install epel
+  yum: name=epel-release state=present
+
+- name: Install Java
+  yum: name=java-1.8.0-openjdk-devel state=present
+
+- name: Add mesosphere repo
+  yum: name=http://repos.mesosphere.com/el/7/noarch/RPMS/mesosphere-el-repo-7-1.noarch.rpm state=present
+
+- name: Install mesosphere zookeeper
+  yum: pkg=mesosphere-zookeeper state=present update_cache=yes
+
+- name: Assign Zookeeper id
+  copy: dest=/var/lib/zookeeper/myid content="{{ zk_id }}"
+  notify:
+    - restart_zookeeper
+
+- name: Configure zookeeper
+  template: src=zoo.cfg.j2 dest=/etc/zookeeper/conf/zoo.cfg owner=root group=root
+  notify:
+    - restart_zookeeper
+
+- name: Ensure zookeeper service started and enabled
+  service: name=zookeeper state=started enabled=true
+
+#- name: Create directory for exhibitor
+#  file: name=/opt/exhibitor state=directory owner=root group=wheel mode=0755
+  
+#- name: Create data directory for exhibitor
+#  file: name=/opt/exhibitor/data state=directory owner=root group=wheel mode=0755
+
+#- name: Create log directory for exhibitor
+#  file: name=/opt/exhibitor/log state=directory owner=root group=wheel mode=0755
+
+#- name: Create config directory for exhibitor
+#  file: name=/opt/exhibitor/conf state=directory owner=root group=wheel mode=0755
+
+#- name: Set exhibitor.cfg
+#  template: src=exhibitor.cfg.j2 dest=/opt/exhibitor/exhibitor.cfg owner=root group=wheel
