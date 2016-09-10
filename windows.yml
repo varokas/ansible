@@ -1,0 +1,9 @@
+#- hosts: windows
+#  tasks:
+#    - name: Set timezone to Bangkok
+#      win_timezone: timezone="SE Asia Standard Time"
+
+- hosts: windows
+  roles:
+#    - win_tools
+    - win_ramdisk

@@ -1,0 +1,13 @@
+---
+- name: Install notepadplusplus
+  win_chocolatey: 
+    name: notepadplusplus 
+    state: present
+
+- name: Install git
+  win_chocolatey: 
+    name: git 
+    state: present
+
+- name: Create setup directory if not exists
+  win_file: path=C:\setup state=directory

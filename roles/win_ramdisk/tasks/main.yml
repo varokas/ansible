@@ -1,0 +1,14 @@
+---
+- name: Create setup directory if not exists
+  win_file: path=C:\setup state=directory
+
+- name: Download Ramdisk if not exists
+  win_get_url:
+    url: "{{ ramdisk_download_url }}"
+    dest: 'C:\setup\ramdisk_setup.exe'
+
+- name: Install ramdisk
+  win_package:
+    path: 'C:\setup\ramdisk_setup.exe'
+    product_id: "{33A14ED9-0340-4193-BEDB-B95BC8196182}_is1"
+    Arguments: "/SILENT"
