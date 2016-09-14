@@ -1,0 +1,13 @@
+- name: restart_selenium-node
+  shell: "systemctl daemon-reload"
+  notify: restart_selenium-node_service
+  
+- name: restart_selenium-node_service
+  service: name=selenium-node state=restarted
+        
+- name: restart_xvfb
+  shell: "systemctl daemon-reload"
+  notify: restart_xvfb_service
+  
+- name: restart_xvfb_service
+  service: name=xvfb state=restarted

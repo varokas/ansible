@@ -1,0 +1,5 @@
+---
+selenium_server_url: "http://selenium-release.storage.googleapis.com/2.53/selenium-server-standalone-2.53.1.jar"
+selenium_jar: "selenium-server-standalone-2.53.1.jar"
+java_opts: ""
+selenium_hub_port: "4444"

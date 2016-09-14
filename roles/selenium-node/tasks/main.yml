@@ -1,0 +1,40 @@
+---
+- name: Install EPEL
+  yum: name=epel-release state=present
+
+- name: Install JDK 
+  yum: name=java-1.8.0-openjdk-devel update_cache=yes state=present
+
+- name: Install firefox and xvfb
+  yum: name={{ item }} state=present
+  with_items:
+    - firefox
+    - xorg-x11-server-Xvfb
+
+- name: Create selenium directory
+  file: name=/opt/selenium state=directory
+
+- name: Download Selenium 
+  get_url: 
+    url: "{{ selenium_server_url }}"
+    dest: "/opt/selenium/{{ selenium_jar }}"
+
+- name: Create xvfb service
+  template: src=xvfb.service.j2 dest=/etc/systemd/system/xvfb.service
+  notify: 
+   - restart_xvfb
+   - restart_selenium-node
+
+- name: Start xvfb service
+  service: name=xvfb state=started enabled=true
+
+- name: Create Node Config 
+  template: src=config.json.j2 dest=/opt/selenium/config.json
+  notify: restart_selenium-node
+
+- name: Create selenium-node service
+  template: src=selenium-node.service.j2 dest=/etc/systemd/system/selenium-node.service
+  notify: restart_selenium-node
+
+- name: Start selenium-node service
+  service: name=selenium-node state=started enabled=true

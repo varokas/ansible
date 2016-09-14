@@ -1,2 +1,7 @@
 - name: restart_selenium-hub
-  service: name=selenium-hub state=restarted      
+  shell: "systemctl daemon-reload"
+  notify: restart_selenium-hub_service
+  
+- name: restart_selenium-hub_service
+  service: name=selenium-hub state=restarted
+        

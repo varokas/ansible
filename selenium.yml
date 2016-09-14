@@ -1,6 +1,12 @@
-- hosts: selenium-hub
+# - hosts: selenium-hub
+#   become: yes
+#   become_method: sudo
+#   roles:
+#     - selenium-hub
+
+
+- hosts: selenium-node
   become: yes
   become_method: sudo
   roles:
-    - selenium-hub
-
+    - selenium-node

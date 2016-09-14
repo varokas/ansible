@@ -1,0 +1,9 @@
+[Unit]
+Description=Selenium Node
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/java {{ java_opts }} -jar /opt/selenium/{{ selenium_jar }} \
+    -role node \
+    -hub http://{{ selenium_hub_addr }}:{{ selenium_hub_port }}/grid/register \
+    -nodeConfig /opt/selenium/config.json
