@@ -1,0 +1,23 @@
+---
+- name: Install EPEL
+  yum: name=epel-release state=present
+
+- name: Install JDK8 
+  yum: name=java-1.8.0-openjdk-devel update_cache=yes state=present
+
+- name: Create selenium directory
+  file: name=/opt/selenium state=directory
+
+- name: Download Selenium 
+  get_url: 
+    url: "{{ selenium_server_url }}"
+    dest: "/opt/selenium/{{ selenium_jar }}"
+
+- name: Create Hub Config 
+  template: src=config.json.j2 dest=/opt/selenium/config.json
+
+- name: Create selenium-hub service
+  template: src=selenium-hub.service.j2 dest=/etc/systemd/system/selenium-hub.service
+
+- name: Start selenium-hub service
+  service: name=selenium-hub state=started enabled=true

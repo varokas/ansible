@@ -1,0 +1,6 @@
+[Unit]
+Description=Selenium Hub
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/java {{ java_opts }} -jar /opt/selenium/{{ selenium_jar }} -role hub -hubConfig /opt/selenium/config.json
