@@ -15,9 +15,11 @@
 
 - name: Create Hub Config 
   template: src=config.json.j2 dest=/opt/selenium/config.json
+  notify: restart_selenium-hub
 
 - name: Create selenium-hub service
   template: src=selenium-hub.service.j2 dest=/etc/systemd/system/selenium-hub.service
+  notify: restart_selenium-hub
 
 - name: Start selenium-hub service
   service: name=selenium-hub state=started enabled=true

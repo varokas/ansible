@@ -1,0 +1,2 @@
+- name: restart_selenium-hub
+  service: name=selenium-hub state=restarted      
