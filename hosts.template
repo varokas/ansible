@@ -8,3 +8,18 @@ ansible_port=5985
 ansible_connection=winrm
 # The following is necessary for Python 2.7.9+ when using default WinRM self-signed certificates:
 ansible_winrm_server_cert_validation=ignore
+
+[selenium:children]
+selenium-hub
+selenium-node
+
+[selenium-hub]
+hub1
+
+[selenium-node]
+node1 selenium_hub_addr=hub1
+node2 selenium_hub_addr=hub1
+
+[selenium:vars]
+ansible_user=centos
+ansible_ssh_private_key_file=~/.ssh/varokas.pem
