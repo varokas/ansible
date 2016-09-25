@@ -51,5 +51,5 @@ clientPort=2181
 #leaderServes=yes
 
 {% for play_host in play_hosts %}
-server.{{ hostvars[play_host]["zk_id"] }}={{hostvars[play_host]["zk_ip"]}}:2888:3888
+server.{{ hostvars[play_host]["zk_id"] }}={{hostvars[play_host]["private_ip"]}}:2888:3888
 {% endfor %}

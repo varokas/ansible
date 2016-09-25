@@ -1,0 +1,11 @@
+---
+- name: Install marathon-lb from docker
+  docker_container:
+    name: marathon-lb
+    image: mesosphere/marathon-lb
+    network_mode: host
+    restart_policy: unless-stopped
+    state: started
+    command: "sse --health-check --group external --marathon http://localhost:8080 --auth-credentials={{marathon_user}}:{{marathon_password}}"
+    env:
+      PORTS: 9090

@@ -1,10 +1,18 @@
-- hosts: mesos-master
-  roles:
+# pip install docker-py
+
+
+#- hosts: mesos-master
+#  roles:
 #    - mesos-zookeeper
 #    - mesos-master
-    - marathon
+#    - marathon
 
-- hosts: mesos-agent
-  roles:
-     - docker
-     - mesos-agent
+#- hosts: mesos-agent
+#  roles:
+#     - docker
+#     - mesos-agent
+
+- hosts: mesos-master
+  roles: 
+    - docker
+    - marathon-lb

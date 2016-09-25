@@ -30,3 +30,9 @@
 
 - name: Ensure docker is started
   service: name="docker" state="started" enabled=true
+
+- name: Install pip
+  yum: name=python-pip state=present
+
+- name: Install docker-py
+  pip: name=docker-py version="1.9.0" state=present
