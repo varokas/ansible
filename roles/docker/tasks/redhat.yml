@@ -31,6 +31,9 @@
 - name: Ensure docker is started
   service: name="docker" state="started" enabled=true
 
+- name: Ensure epel-release is installed
+  yum: name=epel-release state=present
+
 - name: Install pip
   yum: name=python-pip state=present
 

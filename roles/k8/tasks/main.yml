@@ -1,0 +1,38 @@
+---
+- name: Add virt7 yumrepo
+  yum_repository:
+    name: virt7-docker-common-release
+    description: virt7 docker common release
+    baseurl: http://cbs.centos.org/repos/virt7-docker-common-release/x86_64/os/
+    gpgcheck: no
+    enabled: yes
+
+- name: Install k8 and prereqs
+  yum: 
+    name: "{{item}}"
+    state: present
+  with_items:
+    - kubernetes 
+    - etcd 
+    - flannel
+
+- name: "Build hosts file"
+  lineinfile: dest=/etc/hosts regexp='^{{ item }}.*$' line="{{item}} {{ hostvars[item].hostname }}" state=present
+  when: hostvars[item].hostname is defined
+  with_items: "{{groups.k8}}"
+  tags: host_file
+
+- name: Disable firewall
+  service: name="{{item}}" enabled=false state=stopped
+  with_items: 
+    # - iptables-services
+    - firewalld
+  tags: firewall
+
+- name: Add k8 config
+  template: src=kubernetes-config dest=/etc/kubernetes/config
+  tags: config
+
+- include: k8-master.yml
+  when: hostvars["k8-role"] == "master"
+  tags: specific

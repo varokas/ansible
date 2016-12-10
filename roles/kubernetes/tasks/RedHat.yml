@@ -1,0 +1,23 @@
+---
+- name: Add yum repository for kubernetes
+  yum_repository:
+    name: kubernetes 
+    description: "Kubernetes"
+    baseurl: "http://yum.kubernetes.io/repos/kubernetes-el7-x86_64"
+    enabled: yes
+    gpgcheck: yes
+    gpgkey: "https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg"
+
+- name: Disable SELinux
+  selinux: state=disabled
+
+- name: Install Kubernetes
+  yum: name={{item}} state=present
+  with_items:
+    - kubelet 
+    - kubeadm 
+    - kubectl 
+    - kubernetes-cni
+
+- name: Enable and start kubelet
+  service: name=kubelet state=started enabled=yes
