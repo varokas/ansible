@@ -1,0 +1,14 @@
+---
+- name: Add kubelet config
+  template: src=kubelet dest=/etc/kubernetes/kubelet
+
+- name: Add flannel config
+  template: src=flanneld dest=/etc/sysconfig/flanneld
+
+- name: start service
+  service: name={{item}} state=started enabled=true
+  with_items:
+   - kube-proxy 
+   - kubelet 
+   - flanneld 
+   - docker 

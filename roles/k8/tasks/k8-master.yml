@@ -1,0 +1,28 @@
+---
+- name: Add etcd conf
+  template: src=etcd.conf dest=/etc/etcd/etcd.conf
+
+- name: Add apiserver conf
+  template: src=apiserver dest=/etc/kubernetes/apiserver
+
+- name: ensure etcd is started
+  service: name=etcd state=started
+
+- name: add network config dir
+  shell: 'if etcdctl ls /kube-centos/network; then echo "network already exists"; else etcdctl mkdir /kube-centos/network; fi'
+
+- name: add network config 
+  shell: 'if etcdctl ls /kube-centos/network/config; then echo "network already exists"; else etcdctl mk /kube-centos/network/config "{ \"Network\": \"172.30.0.0/16\", \"SubnetLen\": 24, \"Backend\": { \"Type\": \"vxlan\" } }"; fi'
+
+- name: add flannel config
+  template: src=flanneld dest=/etc/sysconfig/flanneld
+
+- name: start master services
+  service: name={{item}} state=started enabled=yes
+  with_items:
+    - etcd 
+    - kube-apiserver 
+    - kube-controller-manager 
+    - kube-scheduler 
+    - flanneld
+  tags: k8_master_services

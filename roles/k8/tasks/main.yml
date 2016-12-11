@@ -34,5 +34,9 @@
   tags: config
 
 - include: k8-master.yml
-  when: hostvars["k8-role"] == "master"
-  tags: specific
+  when: k8role == "master"
+  tags: master 
+
+- include: k8-minion.yml
+  when: k8role == "minion"
+  tags: minion
