@@ -1,0 +1,9 @@
+version: '2'
+services:
+  ghost:
+    image: ghost
+    ports: 
+      - "2368:2368"
+    volumes:
+      - "/home/centos/ghost:/var/lib/ghost"
+    restart: always
