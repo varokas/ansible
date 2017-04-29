@@ -1,42 +1,33 @@
 ---
-- name: Add virt7 yumrepo
-  yum_repository:
-    name: virt7-docker-common-release
-    description: virt7 docker common release
-    baseurl: http://cbs.centos.org/repos/virt7-docker-common-release/x86_64/os/
-    gpgcheck: no
-    enabled: yes
+- name: Stop Firewalld (for docker)
+  service: name=firewalld state=stopped enabled=no
 
-- name: Install k8 and prereqs
-  yum: 
-    name: "{{item}}"
-    state: present
+- name: Install ntp
+  yum: name=ntp state=present
+
+- name: Enable and start ntp
+  service: name=ntpd state=started enabled=yes
+
+- name: Install kubernetes
+  yum: name=kubernetes state=present
+
+- name: changing kubernetes config
+  lineinfile:
+    dest: "/etc/kubernetes/apiserver"
+    regexp: "{{ item.key }}="
+    line: "{{ item.key }}={{ item.value }}"
   with_items:
-    - kubernetes 
-    - etcd 
-    - flannel
+    - { key: 'KUBE_API_ADDRESS', value: '"--address=0.0.0.0"' }
+    - { key: 'KUBE_API_PORT', value: '"--port=8080"' }
+    - { key: 'KUBELET_PORT', value: '"--kubelet_port=10250"' }
+    - { key: 'KUBE_ETCD_SERVERS', value: '"--etcd_servers=http://127.0.0.1:2379"' }
+    - { key: 'KUBE_SERVICE_ADDRESSES', value: '"--service-cluster-ip-range=10.254.0.0/16"' }
+    - { key: 'KUBE_ADMISSION_CONTROL', value: '"--admission_control=NamespaceLifecycle,NamespaceExists,LimitRanger,SecurityContextDeny,ResourceQuota"' }
+    - { key: 'KUBE_API_ARGS', value: '""' }
 
-- name: "Build hosts file"
-  lineinfile: dest=/etc/hosts regexp='^{{ item }}.*$' line="{{item}} {{ hostvars[item].hostname }}" state=present
-  when: hostvars[item].hostname is defined
-  with_items: "{{groups.k8}}"
-  tags: host_file
-
-- name: Disable firewall
-  service: name="{{item}}" enabled=false state=stopped
-  with_items: 
-    # - iptables-services
-    - firewalld
-  tags: firewall
-
-- name: Add k8 config
-  template: src=kubernetes-config dest=/etc/kubernetes/config
-  tags: config
-
-- include: k8-master.yml
-  when: k8role == "master"
-  tags: master 
-
-- include: k8-minion.yml
-  when: k8role == "minion"
-  tags: minion
+- name: start kubernetes services
+  service: name={{ item }} state=started enabled=yes
+  with_items:
+    - kube-apiserver
+    - kube-controller-manager
+    - kube-scheduler

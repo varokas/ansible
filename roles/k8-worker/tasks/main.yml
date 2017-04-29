@@ -1,0 +1,36 @@
+---
+- name: Install ntp
+  yum: name=ntp state=present
+
+- name: Enable and start ntp
+  service: name=ntpd state=started enabled=yes
+
+- name: Install kubernetes
+  yum: name=kubernetes state=present
+
+- name: changing kubernetes config
+  lineinfile:
+    dest: "/etc/kubernetes/config"
+    regexp: "{{ item.key }}="
+    line: "{{ item.key }}={{ item.value }}"
+  with_items:
+    - { key: 'KUBE_MASTER', value: '"--master=http://{{kube_master_server}}:8080"' }
+
+- name: changing kubelet config
+  lineinfile:
+    dest: "/etc/kubernetes/kubelet"
+    regexp: "{{ item.key }}="
+    line: "{{ item.key }}={{ item.value }}"
+  with_items:
+    - { key: 'KUBELET_ADDRESS', value: '"--address=0.0.0.0"' }
+    - { key: 'KUBELET_PORT', value: '"--port=10250"' }
+    - { key: 'KUBELET_HOSTNAME', value: '"--hostname_override={{inventory_hostname}}"' }
+    - { key: 'KUBELET_API_SERVER', value: '"--api_servers=http://{{kube_master_server}}:8080"' }
+    - { key: 'KUBELET_ARGS', value: '""' }
+
+- name: start kubernetes services
+  service: name={{ item }} state=started enabled=yes
+  with_items:
+    - docker
+    - kube-proxy
+    - kubelet

@@ -1,4 +1,21 @@
 ---
-- hosts: k8
-  roles:
-    - k8
+- hosts: k8-master
+  become: yes
+  become_method: sudo
+  roles:   
+    - etcd
+  #  tasks:
+  #  - name: Add flannel network config
+  #    shell: "etcdctl mk /atomic.io/network/config '{\"Network\":\"172.17.0.0/16\"}'"
+
+- hosts: k8-worker
+  become: yes
+  become_method: sudo
+  vars: 
+    etcd_port: 2379
+    etcd_server: "45.32.112.229"
+    kube_master_server: "45.32.112.229"
+  roles:   
+    #- flannel
+    #- docker
+    - k8-worker

@@ -1,0 +1,17 @@
+---
+- name: Install etcd
+  yum: name=etcd state=present
+
+- name: changing etcd.conf
+  lineinfile: 
+    dest: "/etc/etcd/etcd.conf" 
+    regexp: "{{ item.key }}=" 
+    line: "{{ item.key }}={{ item.value }}"
+  with_items:
+    - { key: 'ETCD_NAME', value: 'default' }
+    - { key: 'ETCD_DATA_DIR', value: '"/var/lib/etcd/default.etcd"' }
+    - { key: 'ETCD_LISTEN_CLIENT_URLS', value: '"http://0.0.0.0:2379"' }
+    - { key: 'ETCD_ADVERTISE_CLIENT_URLS', value: '"http://localhost:2379"' }
+
+- name: start etcd
+  service: name=etcd state=started enabled=yes

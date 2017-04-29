@@ -1,0 +1,14 @@
+---
+- name: Install flannel
+  yum: name=flannel state=present
+
+- name: changing flannel config
+  lineinfile: 
+    dest: "/etc/sysconfig/flanneld" 
+    regexp: "{{ item.key }}=" 
+    line: "{{ item.key }}={{ item.value }}"
+  with_items:
+    - { key: 'FLANNEL_ETCD_ENDPOINTS', value: '"http://{{ etcd_server }}:{{ etcd_port }}"' }
+
+- name: start flannel
+  service: name=flanneld state=started enabled=yes

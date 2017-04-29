@@ -1,0 +1,1 @@
+pub=`cat ~/.ssh/varokas.pem.pub`; ssh -i ~/.ssh/varokas.pem root@$1 "useradd centos; gpasswd -a centos wheel; mkdir -p /home/centos/.ssh; echo $pub > /home/centos/.ssh/authorized_keys; chown -R centos:centos /home/centos/.ssh"
