@@ -1,3 +1,6 @@
+[local]
+localhost ansible_connection=local
+
 [windows]
 windows1.example.com
 

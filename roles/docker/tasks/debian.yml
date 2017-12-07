@@ -1,0 +1,25 @@
+---
+# https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-using-the-repository
+
+- name: Install apt dependencies
+  apt: name={{item}} state='present'
+  become: yes
+  with_items:
+    - "apt-transport-https"
+    - "ca-certificates"
+    - "curl"
+    - "software-properties-common"
+
+- name: Add apt key
+  become: yes
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+
+- name: Add apt repository
+  become: yes
+  apt_repository:
+    repo: "deb https://download.docker.com/linux/ubuntu xenial stable"
+
+- name: Install docker 
+  become: yes
+  apt: name=docker-ce state=present   
