@@ -1,0 +1,8 @@
+---
+- name: Install nginx
+  become: yes
+  apt: name=nginx state=present
+
+- name: Add ufw firewall rules for SSL
+  become: yes
+  ufw: rule=allow name="Nginx HTTPS"

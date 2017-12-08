@@ -1,0 +1,10 @@
+---
+- name: Add OpenSSH rule
+  become: yes
+  ufw:
+    rule: allow
+    name: OpenSSH
+
+- name: Enable UFW
+  become: yes
+  ufw: state=enabled
