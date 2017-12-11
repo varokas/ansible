@@ -1,0 +1,11 @@
+upstream service {
+    server localhost:{{proxy_port}};
+}
+server {
+    server_name {{proxy_server_name}};
+
+    location / {
+        proxy_pass            http://service;
+        proxy_set_header      Host $host;
+    }
+}
